@@ -30,14 +30,14 @@ class LanVsWan(Scene):
             lines_l.add(line)
 
         # WAN SECTION
-        wan_title = Text("WAN", **fire_style.HERO_STYLE).to_edge(UP).shift(RIGHT * 3)
-        wan_desc = Text("Wide Area Network",**fire_style.SUBHERO_STYLE).next_to(wan_title, DOWN)
+        wan_title = Text("WAN", **red_style.HERO_STYLE).to_edge(UP).shift(RIGHT * 3)
+        wan_desc = Text("Wide Area Network",**red_style.SUBHERO_STYLE).next_to(wan_title, DOWN)
         lan1_center = RIGHT * 1 + UP * 1
         lan2_center = RIGHT * 4 + DOWN * 1
         lan3_center = RIGHT * 5 + UP * 1
-        router1 = Circle(**fire_style.DOT_STYLE).move_to(lan1_center)
-        router2 = Circle(**fire_style.DOT_STYLE).move_to(lan2_center)
-        router3 = Circle(**fire_style.DOT_STYLE).move_to(lan3_center)
+        router1 = Circle(**red_style.DOT_STYLE).move_to(lan1_center)
+        router2 = Circle(**red_style.DOT_STYLE).move_to(lan2_center)
+        router3 = Circle(**red_style.DOT_STYLE).move_to(lan3_center)
         wan_link = Line(router1.get_center(), router2.get_center(), color=CANDY_RED)
         wan_link2 = ArcBetweenPoints(router2.get_center(), router3.get_center(), angle=45 * DEGREES, color=CANDY_RED)
 

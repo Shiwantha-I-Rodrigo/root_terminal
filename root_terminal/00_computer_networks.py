@@ -61,7 +61,7 @@ class Network(Scene):
         vertex_objects = list(network.vertices.values())
 
         flashes = [
-            Indicate(random.choice(vertex_objects), color=ELECTRIC_LIME, scale_factor=1.5) 
+            Indicate(random.choice(vertex_objects), color=GLITCH_GOLD, scale_factor=1.5) 
             for _ in range(120)
         ]
 

@@ -23,7 +23,7 @@ class OSIEncapsulation(Scene):
             "2. Data Link",
             "1. Physical"
         ]
-        osi_colors = [RED, ORANGE, YELLOW, GREEN, BLUE, PURPLE, PINK]
+        osi_colors = [CANDY_RED, ORANGE, YELLOW, MATRIX_GREEN, BABY_BLUE, POINT_PURPLE, GLITCH_GOLD]
 
         # osi stacks
         osi_stack = VGroup()
@@ -38,7 +38,7 @@ class OSIEncapsulation(Scene):
         pc1 = SVGMobject(str(pc1_path))
         apply_icon_style(pc1,GLITCH_GOLD).next_to(hero, DOWN, buff=1)
         pc1.set_z_index(3)
-        osi_stack.next_to(pc1, DOWN, buff=1)
+        osi_stack.next_to(pc1, DOWN, buff=0.2)
         osi_stack.to_edge(LEFT, buff=1)
         pc1.move_to(osi_stack.get_top() + UP * 1)
 
@@ -54,7 +54,7 @@ class OSIEncapsulation(Scene):
         pc2 = SVGMobject(str(pc2_path))
         apply_icon_style(pc2,CANDY_RED).next_to(hero, DOWN, buff=1)
         pc2.set_z_index(3)
-        osi2_stack.next_to(pc2, DOWN, buff=1)
+        osi2_stack.next_to(pc2, DOWN, buff=0.2)
         osi2_stack.to_edge(RIGHT, buff=1)
         pc2.move_to(osi2_stack.get_top() + UP * 1)
 
@@ -96,7 +96,7 @@ class OSIEncapsulation(Scene):
 
         header_stack = VGroup()
         header_stack.set_z_index(3)
-        data_block = Rectangle(width=1, height=0.5, fill_opacity=0.3, color=MATRIX_DARK)
+        data_block = Rectangle(width=1, height=0.5, fill_opacity=0.3, color=CANDY_RED)
         data_text = Text("DATA", **matrix_style.LABEL_STYLE).move_to(data_block)
         header_stack.add(data_block, data_text)
         header_stack.next_to(osi_stack[0].get_right(), buff=0.6)
@@ -106,7 +106,7 @@ class OSIEncapsulation(Scene):
         self.play(header_stack.animate.next_to(osi_stack[3].get_right(), buff=0.6), run_time=2.5)
         self.wait(1)
 
-        tcp_block = Rectangle(width=0.5, height=0.5, fill_opacity=0.1, color=CANDY_RED).next_to(data_block, LEFT, buff=0)
+        tcp_block = Rectangle(width=0.5, height=0.5, fill_opacity=0.1, color=MATRIX_GREEN).next_to(data_block, LEFT, buff=0)
         tcp_text = Text("TCP", **matrix_style.LABEL_STYLE).move_to(tcp_block)
         header_stack.add(tcp_block, tcp_text)
 
@@ -115,7 +115,7 @@ class OSIEncapsulation(Scene):
         self.play(header_stack.animate.next_to(osi_stack[4].get_right(), buff=0.6), run_time=2.5)
         self.wait(1)
 
-        ip_block = Rectangle(width=0.5, height=0.5, fill_opacity=0.1, color=GLITCH_GOLD).next_to(tcp_block, LEFT, buff=0)
+        ip_block = Rectangle(width=0.5, height=0.5, fill_opacity=0.1, color=BABY_BLUE).next_to(tcp_block, LEFT, buff=0)
         ip_text = Text("IP", **matrix_style.LABEL_STYLE).move_to(ip_block)
         header_stack.add(ip_block, ip_text)
 
@@ -124,9 +124,9 @@ class OSIEncapsulation(Scene):
         self.play(header_stack.animate.next_to(osi_stack[5].get_right(), buff=0.6), run_time=2.5)
         self.wait(1)
 
-        mac_block = Rectangle(width=0.5, height=0.5, fill_opacity=0.1, color=BLUE).next_to(ip_block, LEFT, buff=0)
+        mac_block = Rectangle(width=0.5, height=0.5, fill_opacity=0.1, color=POINT_PURPLE).next_to(ip_block, LEFT, buff=0)
         mac_text = Text("mac", **matrix_style.LABEL_STYLE).move_to(mac_block)
-        mac_block2 = Rectangle(width=0.5, height=0.5, fill_opacity=0.1, color=BLUE).next_to(data_block, RIGHT, buff=0)
+        mac_block2 = Rectangle(width=0.5, height=0.5, fill_opacity=0.1, color=POINT_PURPLE).next_to(data_block, RIGHT, buff=0)
         mac_text2 = Text("mac", **matrix_style.LABEL_STYLE).move_to(mac_block2)
         header_stack.add(mac_block, mac_text, mac_block2, mac_text2)
 
@@ -137,8 +137,8 @@ class OSIEncapsulation(Scene):
 
         bin_stack = VGroup()
         bin_stack.set_z_index(3)
-        bin_block = Rectangle(width=3, height=0.5, fill_opacity=0.3, color=MATRIX_GREEN).next_to(osi_stack[-1], RIGHT, buff=0.1)
-        bin_text = Text("10010010100100001010010", **matrix_style.LABEL_STYLE).move_to(bin_block)
+        bin_block = Rectangle(width=2, height=0.5, fill_opacity=0.2, color=GHOST_GRAY).next_to(osi_stack[-1], RIGHT, buff=0.1)
+        bin_text = Text("1001001010010000101", **gray_style.LABEL_STYLE).move_to(bin_block)
         bin_stack.add(bin_block, bin_text)
 
         self.play(FadeOut(header_stack))

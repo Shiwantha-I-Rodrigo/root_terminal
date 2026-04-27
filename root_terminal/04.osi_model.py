@@ -91,7 +91,7 @@ class NetworkModels(Scene):
             if len(hybrid_stack) > 0:
                 layer.next_to(hybrid_stack[-1], DOWN, buff=0)
             hybrid_stack.add(layer)
-        hybrid_title = Text("TCO/IP Model\n(Hybrid Mode)", **matrix_style.SUBHERO_STYLE).next_to(hero, DOWN, buff=1)
+        hybrid_title = Text("TCP/IP Model\n(Hybrid Mode)", **matrix_style.SUBHERO_STYLE).next_to(hero, DOWN, buff=1)
         hybrid_stack.next_to(hybrid_title, DOWN, buff=1)
 
         # animation

@@ -35,7 +35,7 @@ class WANExplanation(Scene):
         # Site B
         site_b = VGroup(Dot(), Dot(), Dot()).arrange_in_grid(rows=1, buff=0.5)
         rect_b = SurroundingRectangle(site_b, color=CANDY_RED)
-        label_b = Text("London Office", **fire_style.LABEL_STYLE).next_to(rect_b, UP)
+        label_b = Text("London Office", **red_style.LABEL_STYLE).next_to(rect_b, UP)
         building2 = SVGMobject(str(building_path))
         apply_icon_style(building2,CANDY_RED)
         building2.next_to(label_b,UP)
@@ -54,7 +54,7 @@ class WANExplanation(Scene):
         self.wait(1)
 
         # Data Packet Simulation
-        packet = Dot(**fire_style.DOT_STYLE)
+        packet = Dot(**red_style.DOT_STYLE)
         packet2 = Dot(**matrix_style.DOT_STYLE)
 
         for i in range(15):

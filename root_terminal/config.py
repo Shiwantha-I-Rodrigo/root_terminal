@@ -1,12 +1,12 @@
 from manim import *
 
-MATRIX_GREEN = "#00FF41"
-MATRIX_DARK = "#003B00"
 MATRIX_BLACK = "#0D0D0D"
-GLITCH_GOLD = "#FFD700"
+MATRIX_GREEN = "#00FF41"
 CANDY_RED = "#D21404"
-ELECTRIC_LIME = "#CCFF00"
-GHOST_GRAY = GRAY
+GLITCH_GOLD = "#FFD700"
+BABY_BLUE = "#00F0FF"
+POINT_PURPLE = "#A020F0"
+GHOST_GRAY = "#2E2E2E"
 
 def apply_icon_style(svg_obj,color):
     svg_obj.set_width(0.8)
@@ -67,8 +67,7 @@ class matrix_style:
         "stroke_color": WHITE,
     }
 
-class fire_style:
-    # "Liberation Mono" / "Source Code Pro" / "Hack"
+class red_style:
     HERO_STYLE = {
         "font": "Hack",
         "font_size": 40,
@@ -120,7 +119,6 @@ class fire_style:
     }
 
 class gold_style:
-    # "Liberation Mono" / "Source Code Pro" / "Hack"
     HERO_STYLE = {
         "font": "Hack",
         "font_size": 40,
@@ -166,6 +164,159 @@ class gold_style:
     DOT_STYLE = {
         "radius": 0.15,
         "color": GLITCH_GOLD,
+        "fill_opacity": 0.8,
+        "stroke_width": 2,
+        "stroke_color": WHITE,
+    }
+
+class blue_style:
+    HERO_STYLE = {
+        "font": "Hack",
+        "font_size": 40,
+        "color": BABY_BLUE,
+        "fill_opacity": 1,
+        "stroke_width": 1,
+    }
+
+    SUBHERO_STYLE = {
+        "font": "Hack",
+        "font_size": 30,
+        "color": BABY_BLUE,
+        "weight": BOLD,
+    }
+
+    TITLE_STYLE = {
+        "font": "Hack",
+        "font_size": 24,
+        "color": BABY_BLUE,
+        "weight": BOLD,
+    }
+
+    SUBTITLE_STYLE = {
+        "font": "Hack",
+        "font_size": 18,
+        "color": BABY_BLUE,
+        "weight": BOLD,
+    }
+
+    LABEL_STYLE = {
+        "font": "Hack",
+        "font_size": 12,
+        "color": BABY_BLUE,
+        "weight": BOLD,
+    }
+
+    LINE_STYLE = {
+        "stroke_color": BABY_BLUE,
+        "stroke_width": 2,
+        "buff": 0.1,
+    }
+
+    DOT_STYLE = {
+        "radius": 0.15,
+        "color": BABY_BLUE,
+        "fill_opacity": 0.8,
+        "stroke_width": 2,
+        "stroke_color": WHITE,
+    }
+
+class purple_style:
+    HERO_STYLE = {
+        "font": "Hack",
+        "font_size": 40,
+        "color": POINT_PURPLE,
+        "fill_opacity": 1,
+        "stroke_width": 1,
+    }
+
+    SUBHERO_STYLE = {
+        "font": "Hack",
+        "font_size": 30,
+        "color": POINT_PURPLE,
+        "weight": BOLD,
+    }
+
+    TITLE_STYLE = {
+        "font": "Hack",
+        "font_size": 24,
+        "color": POINT_PURPLE,
+        "weight": BOLD,
+    }
+
+    SUBTITLE_STYLE = {
+        "font": "Hack",
+        "font_size": 18,
+        "color": POINT_PURPLE,
+        "weight": BOLD,
+    }
+
+    LABEL_STYLE = {
+        "font": "Hack",
+        "font_size": 12,
+        "color": POINT_PURPLE,
+        "weight": BOLD,
+    }
+
+    LINE_STYLE = {
+        "stroke_color": POINT_PURPLE,
+        "stroke_width": 2,
+        "buff": 0.1,
+    }
+
+    DOT_STYLE = {
+        "radius": 0.15,
+        "color": POINT_PURPLE,
+        "fill_opacity": 0.8,
+        "stroke_width": 2,
+        "stroke_color": WHITE,
+    }
+
+class gray_style:
+    HERO_STYLE = {
+        "font": "Hack",
+        "font_size": 40,
+        "color": GHOST_GRAY,
+        "fill_opacity": 1,
+        "stroke_width": 1,
+    }
+
+    SUBHERO_STYLE = {
+        "font": "Hack",
+        "font_size": 30,
+        "color": GHOST_GRAY,
+        "weight": BOLD,
+    }
+
+    TITLE_STYLE = {
+        "font": "Hack",
+        "font_size": 24,
+        "color": GHOST_GRAY,
+        "weight": BOLD,
+    }
+
+    SUBTITLE_STYLE = {
+        "font": "Hack",
+        "font_size": 18,
+        "color": GHOST_GRAY,
+        "weight": BOLD,
+    }
+
+    LABEL_STYLE = {
+        "font": "Hack",
+        "font_size": 12,
+        "color": GHOST_GRAY,
+        "weight": BOLD,
+    }
+
+    LINE_STYLE = {
+        "stroke_color": GHOST_GRAY,
+        "stroke_width": 2,
+        "buff": 0.1,
+    }
+
+    DOT_STYLE = {
+        "radius": 0.15,
+        "color": GHOST_GRAY,
         "fill_opacity": 0.8,
         "stroke_width": 2,
         "stroke_color": WHITE,

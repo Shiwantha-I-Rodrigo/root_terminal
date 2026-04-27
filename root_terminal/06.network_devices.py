@@ -1,89 +1,230 @@
+import random
+from pathlib import Path
 from manim import *
 from config import *
-from pathlib import Path
-import random
+from common import CommonUtils
 
-class NetworkingDevices(Scene):
+class NetworkingDevices(Scene, CommonUtils):
     def construct(self):
-        self.camera.background_color = MATRIX_BLACK
-        current_dir = Path(__file__).parent
+        self.setup_scene() 
+        self.intro_animation("Networking Devices", "Controlling the Flow of Data")
 
-        hero = Text("Networking Devices", **matrix_style.HERO_STYLE)
-        underline = Line(LEFT, RIGHT).scale(3).next_to(hero, DOWN)
-        subhero = Text("Controling the Flow of Data", **matrix_style.SUBHERO_STYLE).next_to(underline, DOWN)
-        self.play(Write(hero), Create(underline), Write(subhero))
-        self.wait(1.5)
-        self.play(FadeOut(underline), FadeOut(subhero), hero.animate.to_edge(UP).scale(0.7))
+        self.pcs = self.create_end_devices()
+        self.ecs = self.create_extra_devices()
 
-        devices_metadata = {
-            "router": GHOST_GRAY,
-            "switch": GHOST_GRAY,
-            "hub": GHOST_GRAY,
-            "firewall": GHOST_GRAY,
+        device_names = ["hub","switch","router","firewall"]
+        for name in device_names:
+            self.play(FadeIn(self.pcs))
+            device_group = self.create_device_node(name)
+            connections = self.create_connections(device_group[0])
+            self.play(FadeIn(device_group), Create(connections))
+            
+            if name == "hub":
+                self.animate_hub_behavior(connections)
+            elif name == "switch":
+                self.animate_switch_behavior(connections, device_group)
+            elif name == "router":
+                self.animate_router_behavior(connections, device_group)
+            elif name == "firewall":
+                self.animate_firewall_behavior(connections)
+            
+            self.wait(1)
+
+    def create_end_devices(self):
+        colors = [POINT_PURPLE, CANDY_RED, GLITCH_GOLD]
+        positions = [UP * 2, LEFT * 2 + DOWN * 1.5, RIGHT * 2 + DOWN * 1.5]
+        pcs = VGroup()
+        for color, pos in zip(colors, positions):
+            pc = SVGMobject(str(self.assets_path / "device.svg"))
+            apply_icon_style(pc, color)
+            pc.move_to(pos)
+            pcs.add(pc)
+        return pcs
+    
+    def create_extra_devices(self):
+        ecs = VGroup()
+        switch = SVGMobject(str(self.assets_path / "switch.svg"))
+        apply_icon_style(switch, GHOST_GRAY)
+        switch.move_to(RIGHT * 4)
+        ecs.add(switch)
+        pc1 = SVGMobject(str(self.assets_path / "device.svg"))
+        apply_icon_style(pc1, POINT_PURPLE)
+        pc1.move_to(RIGHT * 4 + UP * 2)
+        ecs.add(pc1)
+        pc2 = SVGMobject(str(self.assets_path / "device.svg"))
+        apply_icon_style(pc2, CANDY_RED)
+        pc2.move_to(RIGHT * 4 + DOWN * 2)
+        ecs.add(pc2)
+
+        switch2 = SVGMobject(str(self.assets_path / "switch.svg"))
+        apply_icon_style(switch2, GHOST_GRAY)
+        switch2.move_to(LEFT * 4)
+        ecs.add(switch2)
+        pc3 = SVGMobject(str(self.assets_path / "device.svg"))
+        apply_icon_style(pc3, GLITCH_GOLD)
+        pc3.move_to(LEFT * 4 + UP * 2)
+        ecs.add(pc3)
+        pc4 = SVGMobject(str(self.assets_path / "device.svg"))
+        apply_icon_style(pc4, BABY_BLUE)
+        pc4.move_to(LEFT * 4 + DOWN * 2)
+        ecs.add(pc4)
+
+        label = Text("Switch", **matrix_style.LABEL_STYLE).next_to(switch, LEFT + UP)
+        label2 = Text("Switch", **matrix_style.LABEL_STYLE).next_to(switch2, RIGHT + UP)
+
+        left_data = [
+            ["Fa0/1", "00:0A:95:68:16"],
+            ["Fa0/2", "00:0A:95:68:17"],
+            ["Gi0/1", "AA:BB:CC:EE:01 (GW)"]
+        ]
+        right_data = [
+            ["Fa0/23", "E0:CB:4E:71:B2"],
+            ["Fa0/24", "E0:CB:4E:71:B3"],
+            ["Gi0/2", "FF:EE:DD:BB:02 (GW)"]
+        ]
+        table_l = Table(
+            left_data,
+            col_labels=[Text("Port"), Text("MAC Address")],
+            include_outer_lines=True
+        ).scale(0.2).to_edge(LEFT, buff=0.2)
+        table_r = Table(
+            right_data,
+            col_labels=[Text("Port"), Text("MAC Address")],
+            include_outer_lines=True
+        ).scale(0.2).to_edge(RIGHT, buff=0.2)
+
+        ip_data = [
+            ["192.168.1.0/24", "Gi0/0", "Direct"],
+            ["192.168.2.0/24", "Gi0/1", "Direct"],
+            ["0.0.0.0/0", "Wan0", "10.0.0.1"]
+        ]
+        routing_table = Table(
+            ip_data,
+            col_labels=[Text("Destination"), Text("Interface"), Text("Next Hop")],
+            include_outer_lines=True
+        ).scale(0.2).to_edge(DOWN, buff=2.2)
+
+        ecs.add(label, label2, table_l, table_r, routing_table)
+        return ecs
+
+    def create_device_node(self, name):
+        obj = SVGMobject(str(self.assets_path / f"{name}.svg"))
+        apply_icon_style(obj, MATRIX_GREEN)
+        label = Text(name.title(), **matrix_style.LABEL_STYLE).next_to(obj, DOWN, buff=0.2)
+        return VGroup(obj, label).center()
+
+    def create_connections(self, source_obj):
+        targets = [self.pcs[0].get_bottom(),self.pcs[1].get_corner(UR),self.pcs[2].get_corner(UL)]
+        return VGroup(*[Line(source_obj.get_center(), target, color=MATRIX_GREEN, stroke_opacity=0.5) for target in targets])
+    
+    def create_extra_connections(self, source_obj):
+        return VGroup(Line(self.ecs[0].get_top(), self.ecs[1].get_bottom(), color=MATRIX_GREEN, stroke_opacity=0.5),
+        Line(self.ecs[0].get_bottom(), self.ecs[2].get_top(), color=MATRIX_GREEN, stroke_opacity=0.5),
+        Line(self.ecs[3].get_top(), self.ecs[4].get_bottom(), color=MATRIX_GREEN, stroke_opacity=0.5),
+        Line(self.ecs[3].get_bottom(), self.ecs[5].get_top(), color=MATRIX_GREEN, stroke_opacity=0.5),
+        Line(source_obj.get_center(), self.ecs[3].get_right(), color=MATRIX_GREEN, stroke_opacity=0.5),
+        Line(source_obj.get_center(), self.ecs[0].get_left(), color=MATRIX_GREEN, stroke_opacity=0.5))
+
+    def animate_hub_behavior(self, connections):
+        for _ in range(3):
+            in_conn = random.choice(connections.submobjects)
+            out_conns = [c for c in connections.submobjects if c is not in_conn]
+            
+            p_in = Dot(**matrix_style.DOT_STYLE).set_z_index(3)
+            self.play(MoveAlongPath(p_in, in_conn), run_time=0.8, rate_func=lambda t: 1 - t)
+            self.remove(p_in)
+            p_outs = [Dot(**matrix_style.DOT_STYLE).set_z_index(3) for _ in out_conns]
+            self.play(*[MoveAlongPath(p, conn) for p, conn in zip(p_outs, out_conns)],run_time=0.8, rate_func=linear)
+            self.remove(*p_outs)
+        self.play(FadeOut(*self.mobjects))
+        self.play(FadeIn(self.hero))
+
+    def animate_switch_behavior(self, connections, device_group):
+        num_conns = len(connections.submobjects)
+        style_map = {
+            0: purple_style,
+            1: red_style,
+            2: gold_style
+        }
+        for _ in range(3):
+            in_idx, out_idx = random.sample(range(num_conns), 2)
+            in_conn = connections.submobjects[in_idx]
+            out_conn = connections.submobjects[out_idx]
+
+            style = style_map.get(out_idx, matrix_style)
+            p_in = Dot(**style.DOT_STYLE).set_z_index(3)
+            dot_color = p_in.get_color()
+
+            self.play(MoveAlongPath(p_in, in_conn), run_time=0.8, rate_func=lambda t: 1 - t)
+            self.play(Indicate(device_group[0], color=dot_color, scale_factor=1.5))
+            self.play(MoveAlongPath(p_in, out_conn), run_time=0.8, rate_func=linear)
+            self.remove(p_in)
+        self.play(FadeOut(*self.mobjects))
+        self.play(FadeIn(self.hero))
+
+    def animate_router_behavior(self, connections, device_group):
+        self.wait(5)
+        self.play(FadeIn(self.ecs), FadeOut(self.pcs,connections))
+        extra_connections = self.create_extra_connections(device_group[0])
+        self.play(Create(extra_connections))
+
+        style_map = {
+            0: purple_style,
+            1: red_style,
+            2: gold_style,
+            3: blue_style
         }
 
-        all_devices = VGroup()
-        for name, device_color in devices_metadata.items():
-            path = current_dir / f"assets/{name}.svg"
-            obj = SVGMobject(str(path))
-            apply_icon_style(obj, device_color)
-            label = Text(name.title(), **matrix_style.LABEL_STYLE).next_to(obj, DOWN, buff=0.2)
-            device_group = VGroup(obj, label)
-            all_devices.add(device_group)
-        
-        pc_path = current_dir / "assets/device.svg"
-        end_devices = VGroup(*[SVGMobject(str(pc_path)) for _ in range(3)])
-        apply_icon_style(end_devices[0], MATRIX_GREEN)
-        apply_icon_style(end_devices[1], CANDY_RED)
-        apply_icon_style(end_devices[2], GLITCH_GOLD)
-        end_devices[0].move_to(UP * 2)
-        end_devices[1].move_to(LEFT * 2 + DOWN * 1.5)
-        end_devices[2].move_to(RIGHT * 2 + DOWN * 1.5)
-        self.play(FadeIn(end_devices[0], end_devices[1], end_devices[2]))
+        for _ in range(10):
+            in_idx, out_idx = random.sample(range(4), 2)
+            in_conn = extra_connections.submobjects[in_idx]
+            out_conn = extra_connections.submobjects[out_idx]
 
-        for device in all_devices:
-            connection1 = Line(device[0].get_center(), end_devices[0].get_bottom(), color=MATRIX_GREEN, stroke_opacity=0.5)
-            connection2 = Line(device[0].get_center(), end_devices[1].get_corner(UR), color=CANDY_RED, stroke_opacity=0.5)
-            connection3 = Line(device[0].get_center(), end_devices[2].get_corner(UL), color=GLITCH_GOLD, stroke_opacity=0.5) 
-            connections = VGroup(connection1, connection2, connection3)
-            conns = [connection1, connection2, connection3]
-            packet = Dot(**matrix_style.DOT_STYLE)
-            packet.set_z_index(3)
-            packet_f = Dot(**fire_style.DOT_STYLE)
-            packet_f.set_z_index(3)
-            packet_g = Dot(**fire_style.DOT_STYLE)
-            packet_g.set_z_index(3)
-            self.play(FadeIn(device), Create(connections))
+            style = style_map.get(out_idx, matrix_style)
+            p_in = Dot(**style.DOT_STYLE).set_z_index(3)
 
-            match device[1].text:
-                case "Hub":
-                    for i in range(10):
-                        start_idx = i % 3
-                        other_indices = [idx for idx in range(3) if idx != start_idx]
-                        start_line = conns[start_idx]
-                        out_line_a = conns[other_indices[0]]
-                        out_line_b = conns[other_indices[1]]
-                        self.play(MoveAlongPath(packet, start_line), run_time=0.8, rate_func=lambda t: 1 - t)
-                        packet2 = packet.copy() 
-                        self.play(MoveAlongPath(packet, out_line_a), MoveAlongPath(packet2, out_line_b), run_time=0.8, rate_func=linear)
-                        self.play(FadeOut(packet), FadeOut(packet2), run_time=0.2)
-                case "Switch":
-                    for _ in range(10):
-                        source_idx = random.randint(0, 2)
-                        dest_idx = random.choice([i for i in range(3) if i != source_idx])
-                        source_line = conns[source_idx]
-                        dest_line = conns[dest_idx]
-                        self.play(MoveAlongPath(packet, source_line),run_time=0.6,rate_func=lambda t: 1 - t)
-                        self.play(MoveAlongPath(packet, dest_line),run_time=0.6,rate_func=linear)
-                        self.play(FadeOut(packet), run_time=0.2)
-                case "Router":
-                    pass
-                case "Firewall":
-                    pass
-                case _:
-                    pass
+            self.play(MoveAlongPath(p_in, in_conn), run_time=1, rate_func=lambda t: 1 - t)
 
-            
+            # Define configuration mappings for row indices and colors
+            row_config = {
+                0: (9, 1, POINT_PURPLE),
+                1: (9, 2, CANDY_RED),
+                2: (8, 1, GLITCH_GOLD),
+                3: (8, 2, BABY_BLUE)
+            }
 
-            self.wait(3)
-            self.play(FadeOut(device), FadeOut(connections))
+            # Map indices to their respective "Entry" ECS objects and connection paths
+            group_map = {
+                2: {"ecs": self.ecs[3], "path_idx": 4},
+                3: {"ecs": self.ecs[3], "path_idx": 4},
+                0: {"ecs": self.ecs[0], "path_idx": 5},
+                1: {"ecs": self.ecs[0], "path_idx": 5}
+            }
+
+            in_data = group_map[in_idx]
+            out_data = group_map[out_idx]
+            same_group = (in_idx in {2, 3}) == (out_idx in {2, 3})
+
+            if same_group:
+                ecs_idx, row_idx, row_color = row_config[out_idx]
+                self.play(Indicate(self.ecs[ecs_idx].get_rows()[row_idx], color=row_color, scale_factor=1.1), Indicate(in_data["ecs"], color=row_color, scale_factor=1.1))
+
+            else:
+                cross_row_idx = 3
+                ecs_idx, row_idx, row_color = row_config[out_idx]
+                target_row_10 = 1 if ecs_idx == 9 else (2 if ecs_idx == 8 else 3)
+                self.play(Indicate(self.ecs[in_idx < 2 and 9 or 8].get_rows()[cross_row_idx], color=MATRIX_GREEN, scale_factor=1.1), Indicate(in_data["ecs"], color=MATRIX_GREEN, scale_factor=1.5))
+                self.play(MoveAlongPath(p_in, extra_connections[in_data["path_idx"]]), run_time=2, rate_func=lambda t: 1 - t)
+                self.play(Indicate(device_group[0], color=MATRIX_GREEN, scale_factor=1.1), Indicate(self.ecs[10].get_rows()[target_row_10], color=MATRIX_GREEN, scale_factor=1.1))
+                self.play(MoveAlongPath(p_in, extra_connections[out_data["path_idx"]]), run_time=2, rate_func=linear)
+                self.play(Indicate(out_data["ecs"], color=row_color, scale_factor=1.1), Indicate(self.ecs[ecs_idx].get_rows()[row_idx], color=row_color, scale_factor=1.1))
+
+            self.play(MoveAlongPath(p_in, out_conn), run_time=1, rate_func=linear)
+            self.remove(p_in)
+
+        self.wait(5)
+        self.play(FadeOut(*self.mobjects))
+        self.play(FadeIn(self.hero))
+    
+    def animate_firewall_behavior(self, connections):
+        pass
