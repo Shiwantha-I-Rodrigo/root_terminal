@@ -1,323 +1,111 @@
 from manim import *
 
-MATRIX_BLACK = "#0D0D0D"
+VOID_BLACK = "#0D0D0D"
 MATRIX_GREEN = "#00FF41"
-CANDY_RED = "#D21404"
-GLITCH_GOLD = "#FFD700"
-BABY_BLUE = "#00F0FF"
-POINT_PURPLE = "#A020F0"
-GHOST_GRAY = "#2E2E2E"
+ELECTRIC_RED = "#FF3131"
+NEON_YELLOW = "#FFF01F"
+CYBER_BLUE = "#00F0FF"
+SHOCK_PURPLE = "#BF00FF"
+GHOST_WHITE = "#F8F8FF"
+VAPOR_PINK = "#FF00FF"
+ALERT_AMBER = "#FF8C00"
 
 def apply_icon_style(svg_obj,color):
     svg_obj.set_width(0.8)
-    svg_obj.set_color(WHITE)
-    svg_obj.set_fill(color, opacity=0.7)
+    svg_obj.set_color(GHOST_WHITE)
+    svg_obj.set_fill(color, opacity=0.3)
     svg_obj.set_stroke(width=1)
     return svg_obj
 
-class matrix_style:
-    # "Liberation Mono" / "Source Code Pro" / "Hack"
-    HERO_STYLE = {
-        "font": "Hack",
-        "font_size": 40,
-        "color": MATRIX_GREEN,
-        "fill_opacity": 1,
-        "stroke_width": 1,
-    }
+class BaseStyle:
+    COLOR = GHOST_WHITE  # Default fallback
+    FONT = "Hack"
 
-    SUBHERO_STYLE = {
-        "font": "Hack",
-        "font_size": 30,
-        "color": MATRIX_GREEN,
-        "weight": BOLD,
-    }
+    @property
+    def HERO_STYLE(self):
+        return {
+            "font": self.FONT,
+            "font_size": 40,
+            "color": self.COLOR,
+            "fill_opacity": 1,
+            "stroke_width": 1,
+        }
 
-    TITLE_STYLE = {
-        "font": "Hack",
-        "font_size": 24,
-        "color": MATRIX_GREEN,
-        "weight": BOLD,
-    }
+    @property
+    def SUBHERO_STYLE(self):
+        return {
+            "font": self.FONT,
+            "font_size": 30,
+            "color": self.COLOR,
+            "weight": BOLD,
+        }
 
-    SUBTITLE_STYLE = {
-        "font": "Hack",
-        "font_size": 18,
-        "color": MATRIX_GREEN,
-        "weight": BOLD,
-    }
+    @property
+    def TITLE_STYLE(self):
+        return {
+            "font": self.FONT,
+            "font_size": 24,
+            "color": self.COLOR,
+            "weight": BOLD,
+        }
 
-    LABEL_STYLE = {
-        "font": "Hack",
-        "font_size": 12,
-        "color": MATRIX_GREEN,
-        "weight": BOLD,
-    }
+    @property
+    def SUBTITLE_STYLE(self):
+        return {
+            "font": self.FONT,
+            "font_size": 18,
+            "color": self.COLOR,
+            "weight": BOLD,
+        }
 
-    LINE_STYLE = {
-        "stroke_color": MATRIX_GREEN,
-        "stroke_width": 2,
-        "buff": 0.1,
-    }
+    @property
+    def LABEL_STYLE(self):
+        return {
+            "font": self.FONT,
+            "font_size": 12,
+            "color": self.COLOR,
+            "weight": BOLD,
+        }
 
-    DOT_STYLE = {
-        "radius": 0.15,
-        "color": MATRIX_GREEN,
-        "fill_opacity": 0.8,
-        "stroke_width": 2,
-        "stroke_color": WHITE,
-    }
+    @property
+    def LINE_STYLE(self):
+        return {
+            "stroke_color": self.COLOR,
+            "stroke_width": 1,
+            "buff": 0,
+            "stroke_opacity":0.3,
+        }
 
-class red_style:
-    HERO_STYLE = {
-        "font": "Hack",
-        "font_size": 40,
-        "color": CANDY_RED,
-        "fill_opacity": 1,
-        "stroke_width": 1,
-    }
+    @property
+    def DOT_STYLE(self):
+        return {
+            "radius": 0.1,
+            "color": self.COLOR,
+            "fill_opacity": 0.4,
+            "stroke_width": 1,
+            "stroke_color": WHITE,
+        }
 
-    SUBHERO_STYLE = {
-        "font": "Hack",
-        "font_size": 30,
-        "color": CANDY_RED,
-        "weight": BOLD,
-    }
+class MatrixStyle(BaseStyle):
+    COLOR = MATRIX_GREEN
 
-    TITLE_STYLE = {
-        "font": "Hack",
-        "font_size": 24,
-        "color": CANDY_RED,
-        "weight": BOLD,
-    }
+class RedStyle(BaseStyle):
+    COLOR = ELECTRIC_RED
 
-    SUBTITLE_STYLE = {
-        "font": "Hack",
-        "font_size": 18,
-        "color": CANDY_RED,
-        "weight": BOLD,
-    }
+class YellowStyle(BaseStyle):
+    COLOR = NEON_YELLOW
 
-    LABEL_STYLE = {
-        "font": "Hack",
-        "font_size": 12,
-        "color": CANDY_RED,
-        "weight": BOLD,
-    }
+class BlueStyle(BaseStyle):
+    COLOR = CYBER_BLUE
 
-    LINE_STYLE = {
-        "stroke_color": CANDY_RED,
-        "stroke_width": 2,
-        "buff": 0.1,
-    }
+class PurpleStyle(BaseStyle):
+    COLOR = SHOCK_PURPLE
 
-    DOT_STYLE = {
-        "radius": 0.15,
-        "color": CANDY_RED,
-        "fill_opacity": 0.8,
-        "stroke_width": 2,
-        "stroke_color": WHITE,
-    }
+class PinkStyle(BaseStyle):
+    COLOR = VAPOR_PINK
 
-class gold_style:
-    HERO_STYLE = {
-        "font": "Hack",
-        "font_size": 40,
-        "color": GLITCH_GOLD,
-        "fill_opacity": 1,
-        "stroke_width": 1,
-    }
+class WhiteStyle(BaseStyle):
+    COLOR = GHOST_WHITE
 
-    SUBHERO_STYLE = {
-        "font": "Hack",
-        "font_size": 30,
-        "color": GLITCH_GOLD,
-        "weight": BOLD,
-    }
-
-    TITLE_STYLE = {
-        "font": "Hack",
-        "font_size": 24,
-        "color": GLITCH_GOLD,
-        "weight": BOLD,
-    }
-
-    SUBTITLE_STYLE = {
-        "font": "Hack",
-        "font_size": 18,
-        "color": GLITCH_GOLD,
-        "weight": BOLD,
-    }
-
-    LABEL_STYLE = {
-        "font": "Hack",
-        "font_size": 12,
-        "color": GLITCH_GOLD,
-        "weight": BOLD,
-    }
-
-    LINE_STYLE = {
-        "stroke_color": GLITCH_GOLD,
-        "stroke_width": 2,
-        "buff": 0.1,
-    }
-
-    DOT_STYLE = {
-        "radius": 0.15,
-        "color": GLITCH_GOLD,
-        "fill_opacity": 0.8,
-        "stroke_width": 2,
-        "stroke_color": WHITE,
-    }
-
-class blue_style:
-    HERO_STYLE = {
-        "font": "Hack",
-        "font_size": 40,
-        "color": BABY_BLUE,
-        "fill_opacity": 1,
-        "stroke_width": 1,
-    }
-
-    SUBHERO_STYLE = {
-        "font": "Hack",
-        "font_size": 30,
-        "color": BABY_BLUE,
-        "weight": BOLD,
-    }
-
-    TITLE_STYLE = {
-        "font": "Hack",
-        "font_size": 24,
-        "color": BABY_BLUE,
-        "weight": BOLD,
-    }
-
-    SUBTITLE_STYLE = {
-        "font": "Hack",
-        "font_size": 18,
-        "color": BABY_BLUE,
-        "weight": BOLD,
-    }
-
-    LABEL_STYLE = {
-        "font": "Hack",
-        "font_size": 12,
-        "color": BABY_BLUE,
-        "weight": BOLD,
-    }
-
-    LINE_STYLE = {
-        "stroke_color": BABY_BLUE,
-        "stroke_width": 2,
-        "buff": 0.1,
-    }
-
-    DOT_STYLE = {
-        "radius": 0.15,
-        "color": BABY_BLUE,
-        "fill_opacity": 0.8,
-        "stroke_width": 2,
-        "stroke_color": WHITE,
-    }
-
-class purple_style:
-    HERO_STYLE = {
-        "font": "Hack",
-        "font_size": 40,
-        "color": POINT_PURPLE,
-        "fill_opacity": 1,
-        "stroke_width": 1,
-    }
-
-    SUBHERO_STYLE = {
-        "font": "Hack",
-        "font_size": 30,
-        "color": POINT_PURPLE,
-        "weight": BOLD,
-    }
-
-    TITLE_STYLE = {
-        "font": "Hack",
-        "font_size": 24,
-        "color": POINT_PURPLE,
-        "weight": BOLD,
-    }
-
-    SUBTITLE_STYLE = {
-        "font": "Hack",
-        "font_size": 18,
-        "color": POINT_PURPLE,
-        "weight": BOLD,
-    }
-
-    LABEL_STYLE = {
-        "font": "Hack",
-        "font_size": 12,
-        "color": POINT_PURPLE,
-        "weight": BOLD,
-    }
-
-    LINE_STYLE = {
-        "stroke_color": POINT_PURPLE,
-        "stroke_width": 2,
-        "buff": 0.1,
-    }
-
-    DOT_STYLE = {
-        "radius": 0.15,
-        "color": POINT_PURPLE,
-        "fill_opacity": 0.8,
-        "stroke_width": 2,
-        "stroke_color": WHITE,
-    }
-
-class gray_style:
-    HERO_STYLE = {
-        "font": "Hack",
-        "font_size": 40,
-        "color": GHOST_GRAY,
-        "fill_opacity": 1,
-        "stroke_width": 1,
-    }
-
-    SUBHERO_STYLE = {
-        "font": "Hack",
-        "font_size": 30,
-        "color": GHOST_GRAY,
-        "weight": BOLD,
-    }
-
-    TITLE_STYLE = {
-        "font": "Hack",
-        "font_size": 24,
-        "color": GHOST_GRAY,
-        "weight": BOLD,
-    }
-
-    SUBTITLE_STYLE = {
-        "font": "Hack",
-        "font_size": 18,
-        "color": GHOST_GRAY,
-        "weight": BOLD,
-    }
-
-    LABEL_STYLE = {
-        "font": "Hack",
-        "font_size": 12,
-        "color": GHOST_GRAY,
-        "weight": BOLD,
-    }
-
-    LINE_STYLE = {
-        "stroke_color": GHOST_GRAY,
-        "stroke_width": 2,
-        "buff": 0.1,
-    }
-
-    DOT_STYLE = {
-        "radius": 0.15,
-        "color": GHOST_GRAY,
-        "fill_opacity": 0.8,
-        "stroke_width": 2,
-        "stroke_color": WHITE,
-    }
+class AmberStyle(BaseStyle):
+    COLOR = ALERT_AMBER

@@ -4,7 +4,17 @@ from pathlib import Path
 
 class NetworkModels(Scene):
     def construct(self):
-        self.camera.background_color = MATRIX_BLACK
+
+        matrix_style = MatrixStyle()
+        red_style = RedStyle()
+        yellow_style = YellowStyle()
+        blue_style = BlueStyle()
+        purple_style = PurpleStyle()
+        pink_style = PinkStyle()
+        white_style = WhiteStyle()
+        amber_style = AmberStyle()
+
+        self.camera.background_color = VOID_BLACK
         current_dir = Path(__file__).parent
 
         hero = Text("Networking Architectures", **matrix_style.HERO_STYLE)
@@ -23,7 +33,7 @@ class NetworkModels(Scene):
             "2. Data Link",
             "1. Physical"
         ]
-        osi_colors = [RED, ORANGE, YELLOW, GREEN, BLUE, PURPLE, PINK]
+        osi_colors = [ELECTRIC_RED, ALERT_AMBER, NEON_YELLOW, MATRIX_GREEN, CYBER_BLUE, SHOCK_PURPLE, VAPOR_PINK]
 
         tcp_layers = [
             "Application",
@@ -31,7 +41,7 @@ class NetworkModels(Scene):
             "Network",
             "Link"
         ]
-        tcp_colors = [RED, GREEN, BLUE, PURPLE]
+        tcp_colors = [ELECTRIC_RED, MATRIX_GREEN, CYBER_BLUE, SHOCK_PURPLE]
 
         hybrid_layers = [
             "7. Application",
@@ -40,7 +50,7 @@ class NetworkModels(Scene):
             "2. Data Link",
             "1. Physical"
         ]
-        hybrid_colors = [RED, GREEN, BLUE, PURPLE, PINK]
+        hybrid_colors = [ELECTRIC_RED, MATRIX_GREEN, CYBER_BLUE, SHOCK_PURPLE, VAPOR_PINK]
         
         # osi stack
         osi_stack = VGroup()

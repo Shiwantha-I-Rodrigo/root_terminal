@@ -5,7 +5,17 @@ import random
 
 class LANExplanation(Scene): 
     def construct(self):
-        self.camera.background_color = MATRIX_BLACK
+
+        matrix_style = MatrixStyle()
+        red_style = RedStyle()
+        yellow_style = YellowStyle()
+        blue_style = BlueStyle()
+        purple_style = PurpleStyle()
+        pink_style = PinkStyle()
+        white_style = WhiteStyle()
+        amber_style = AmberStyle()
+        
+        self.camera.background_color = VOID_BLACK
         current_dir = Path(__file__).parent
 
         hero = Text("What is a LAN", **matrix_style.HERO_STYLE)

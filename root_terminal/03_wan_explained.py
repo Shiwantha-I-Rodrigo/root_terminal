@@ -5,7 +5,17 @@ import random
 
 class WANExplanation(Scene):
     def construct(self):
-        self.camera.background_color = MATRIX_BLACK
+
+        matrix_style = MatrixStyle()
+        red_style = RedStyle()
+        yellow_style = YellowStyle()
+        blue_style = BlueStyle()
+        purple_style = PurpleStyle()
+        pink_style = PinkStyle()
+        white_style = WhiteStyle()
+        amber_style = AmberStyle()
+        
+        self.camera.background_color = VOID_BLACK
         current_dir = Path(__file__).parent
 
         hero = Text("What is a WAN", **matrix_style.HERO_STYLE)
@@ -18,7 +28,7 @@ class WANExplanation(Scene):
         # Define the Cloud
         web_path = current_dir / "assets/web.svg"
         cloud = SVGMobject(str(web_path))
-        apply_icon_style(cloud,GHOST_GRAY)
+        apply_icon_style(cloud,GHOST_WHITE)
         cloud.set_z_index(3)
 
         building_path = current_dir / "assets/building.svg"
@@ -34,16 +44,16 @@ class WANExplanation(Scene):
 
         # Site B
         site_b = VGroup(Dot(), Dot(), Dot()).arrange_in_grid(rows=1, buff=0.5)
-        rect_b = SurroundingRectangle(site_b, color=CANDY_RED)
+        rect_b = SurroundingRectangle(site_b, color=ELECTRIC_RED)
         label_b = Text("London Office", **red_style.LABEL_STYLE).next_to(rect_b, UP)
         building2 = SVGMobject(str(building_path))
-        apply_icon_style(building2,CANDY_RED)
+        apply_icon_style(building2,ELECTRIC_RED)
         building2.next_to(label_b,UP)
         building2.set_z_index(3)
         city_b = VGroup(building2, site_b, rect_b, label_b).to_edge(RIGHT,buff=1)
 
         # Connect the sites
-        link_a = Line(rect_a.get_right(), rect_b.get_left(), color=GHOST_GRAY)
+        link_a = Line(rect_a.get_right(), rect_b.get_left(), color=GHOST_WHITE)
         wan_label = Text("WAN Connection", **matrix_style.LABEL_STYLE).next_to(cloud, DOWN)
 
         # Animations

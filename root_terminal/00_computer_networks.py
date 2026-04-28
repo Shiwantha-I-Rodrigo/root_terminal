@@ -5,7 +5,17 @@ import random
 
 class Network(Scene):
     def construct(self):
-        self.camera.background_color = MATRIX_BLACK
+
+        matrix_style = MatrixStyle()
+        red_style = RedStyle()
+        yellow_style = YellowStyle()
+        blue_style = BlueStyle()
+        purple_style = PurpleStyle()
+        pink_style = PinkStyle()
+        white_style = WhiteStyle()
+        amber_style = AmberStyle()
+
+        self.camera.background_color = VOID_BLACK
         current_dir = Path(__file__).parent
 
         hero = Text("What is a Network?", **matrix_style.HERO_STYLE)
@@ -46,7 +56,6 @@ class Network(Scene):
             9: RIGHT * 3.2 + DOWN * 0.3 + DOWN * 0.5,
         }
 
-        # Create Graph
         network = Graph(
             all_vertices, 
             edges, 
@@ -55,13 +64,17 @@ class Network(Scene):
             edge_config={"stroke_width": 3, "stroke_color": GRAY_A}
         )
 
-        # Final Animation
         self.play(Create(network), run_time=3)
 
         vertex_objects = list(network.vertices.values())
 
+        MCOLORS = [
+            MATRIX_GREEN, ELECTRIC_RED, NEON_YELLOW, 
+            CYBER_BLUE, SHOCK_PURPLE, GHOST_WHITE, VAPOR_PINK, ALERT_AMBER
+        ]
+
         flashes = [
-            Indicate(random.choice(vertex_objects), color=GLITCH_GOLD, scale_factor=1.5) 
+            Indicate(random.choice(vertex_objects), color=random.choice(MCOLORS), scale_factor=1.5) 
             for _ in range(120)
         ]
 
