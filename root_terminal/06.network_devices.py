@@ -37,7 +37,7 @@ class NetworkingDevices(Scene, CommonUtils):
             elif name == "router":
                 self.animate_router_behavior(connections, device_group)
             elif name == "firewall":
-                self.animate_firewall_behavior(connections)
+                self.animate_firewall_behavior(connections, device_group)
             
         self.wait(1)
 
@@ -76,7 +76,7 @@ class NetworkingDevices(Scene, CommonUtils):
         pc3.move_to(LEFT * 3 + UP * 2)
         ecs.add(pc3)
         pc4 = SVGMobject(str(self.assets_path / "device.svg"))
-        apply_icon_style(pc4, VAPOR_PINK)
+        apply_icon_style(pc4, GHOST_WHITE)
         pc4.move_to(LEFT * 3 + DOWN * 2)
         ecs.add(pc4)
 
@@ -133,7 +133,7 @@ class NetworkingDevices(Scene, CommonUtils):
             1: self.blue_style,
             2: self.yellow_style
         }
-        for _ in range(5):
+        for _ in range(1):
             in_idx, out_idx, out_idz = random.sample(range(num_conns), 3)
             in_conn = connections.submobjects[in_idx]
             out_conx = connections.submobjects[out_idx]
@@ -154,13 +154,29 @@ class NetworkingDevices(Scene, CommonUtils):
 
     def animate_switch_behavior(self, connections, device_group):
         num_conns = len(connections.submobjects)
+
+        data = [
+            ["Fa0/23", "E0:CB:4E:71:B2"],
+            ["Fa0/24", "E0:CB:4E:71:B3"],
+            ["Fa0/24", "FF:EE:DD:BB:02"]
+        ]
+        table_l = Table(data, col_labels=[Text("Port"), Text("MAC Address")], include_outer_lines=True).scale(0.3).to_edge(LEFT, buff=2).shift(UP*1)
+        self.play(FadeIn(table_l))
+
+        row_config = {
+                0: (1, SHOCK_PURPLE),
+                1: (2, CYBER_BLUE),
+                2: (3, NEON_YELLOW),
+            }
+
         style_map = {
             0: self.purple_style,
             1: self.blue_style,
             2: self.yellow_style
         }
-        for _ in range(5):
+        for _ in range(10):
             in_idx, out_idx, out_idz = random.sample(range(num_conns), 3)
+            row_idx, row_color = row_config[out_idx]
             in_conn = connections.submobjects[in_idx]
             out_conx = connections.submobjects[out_idx]
 
@@ -169,7 +185,9 @@ class NetworkingDevices(Scene, CommonUtils):
             dot_color = p_in.get_color()
 
             self.play(MoveAlongPath(p_in, in_conn), run_time=0.8, rate_func=lambda t: 1 - t)
-            self.play(Indicate(device_group[0], color=MATRIX_GREEN, scale_factor=1.1))
+            self.play(table_l.get_rows()[row_idx].animate.set_color(row_color).scale(1.1), run_time=1, rate_func=smooth)
+            self.play(Indicate(device_group[0], color=row_color, scale_factor=1.1))
+            self.play(table_l.get_rows()[row_idx].animate.set_color(GHOST_WHITE).scale(1/1.1), run_time=1, rate_func=smooth)
             self.play(MoveAlongPath(p_in, out_conx), run_time=0.8, rate_func=linear)
             self.remove(p_in)
         
@@ -188,7 +206,7 @@ class NetworkingDevices(Scene, CommonUtils):
             3: self.white_style
         }
 
-        for _ in range(3):
+        for _ in range(10):
             in_idx, out_idx = random.sample(range(4), 2)
             in_conn = extra_connections.submobjects[in_idx]
             out_conn = extra_connections.submobjects[out_idx]
@@ -250,5 +268,63 @@ class NetworkingDevices(Scene, CommonUtils):
         self.play(FadeOut(*self.mobjects))
         self.play(FadeIn(self.hero))
     
-    def animate_firewall_behavior(self, connections):
-        pass
+    def animate_firewall_behavior(self, connections, device_group):
+        num_conns = len(connections.submobjects)
+
+        data = [
+            ["Fa0/23", "OUT", "ALLOW"],
+            ["Fa0/25", "IN", "ALLOW"],
+            ["Fa0/23", "IN", "DENY"],
+            ["Fa0/25", "OUT", "ALLOW"],
+            ["Fa0/24", "IN", "ALLOW"],
+            ["ALL", "IN", "DENY"],
+            ["ALL", "OUT", "DENY"]
+        ]
+
+        table_l = Table(data, col_labels=[Text("Port"), Text("Direction"), Text("Action")], include_outer_lines=True).scale(0.3).to_edge(LEFT, buff=2).shift(UP*1)
+        self.play(FadeIn(table_l))
+
+        traffic_rules = {
+            "OUT_PORT": {
+                0: (3, ELECTRIC_RED),
+                1: (5, MATRIX_GREEN),
+                2: (2, MATRIX_GREEN),
+            },
+            "IN_PORT": {
+                0: (1, MATRIX_GREEN),
+                1: (7, ELECTRIC_RED),
+                2: (4, MATRIX_GREEN),
+            }
+        }
+
+        style_map = {
+            0: self.purple_style,
+            1: self.blue_style,
+            2: self.yellow_style
+        }
+
+        for _ in range(10):
+            in_idx, out_idx = random.sample(range(num_conns), 2)
+            in_rule, in_color = traffic_rules["IN_PORT"][in_idx]
+            out_rule, out_color = traffic_rules["OUT_PORT"][out_idx]
+            in_conn = connections.submobjects[in_idx]
+            out_conx = connections.submobjects[out_idx]
+
+            style = style_map.get(out_idx, self.matrix_style)
+            p_in = Dot(**style.DOT_STYLE).set_z_index(3)
+            dot_color = p_in.get_color()
+
+            self.play(MoveAlongPath(p_in, in_conn), run_time=0.8, rate_func=lambda t: 1 - t)
+            self.play(table_l.get_rows()[in_rule].animate.set_color(in_color).scale(1.1), run_time=1, rate_func=smooth)
+            self.play(Indicate(device_group[0], color=in_color, scale_factor=1.1))
+            self.play(table_l.get_rows()[in_rule].animate.set_color(GHOST_WHITE).scale(1/1.1), run_time=1, rate_func=smooth)
+            if in_color==MATRIX_GREEN:
+                self.play(table_l.get_rows()[out_rule].animate.set_color(out_color).scale(1.1), run_time=1, rate_func=smooth)
+                self.play(Indicate(device_group[0], color=out_color, scale_factor=1.1))
+                self.play(table_l.get_rows()[out_rule].animate.set_color(GHOST_WHITE).scale(1/1.1), run_time=1, rate_func=smooth)
+                if out_color==MATRIX_GREEN:
+                    self.play(MoveAlongPath(p_in, out_conx), run_time=0.8, rate_func=linear)
+            self.play(FadeOut(p_in))
+        
+        self.play(FadeOut(*self.mobjects))
+        self.play(FadeIn(self.hero))
