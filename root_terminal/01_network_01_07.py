@@ -1,28 +1,24 @@
+import random
+from pathlib import Path
 from manim import *
 from config import *
-from pathlib import Path
+from common import CommonUtils
 
-class OSIEncapsulation(Scene):
+class NetworkEncapsulation(Scene, CommonUtils):
+
+    matrix_style = MatrixStyle()
+    red_style = RedStyle()
+    yellow_style = YellowStyle()
+    blue_style = BlueStyle()
+    purple_style = PurpleStyle()
+    pink_style = PinkStyle()
+    white_style = WhiteStyle()
+    amber_style = AmberStyle()
+
     def construct(self):
 
-        matrix_style = MatrixStyle()
-        red_style = RedStyle()
-        yellow_style = YellowStyle()
-        blue_style = BlueStyle()
-        purple_style = PurpleStyle()
-        pink_style = PinkStyle()
-        white_style = WhiteStyle()
-        amber_style = AmberStyle()
-
-        self.camera.background_color = VOID_BLACK
-        current_dir = Path(__file__).parent
-
-        hero = Text("Encapsulation", **matrix_style.HERO_STYLE)
-        underline = Line(LEFT, RIGHT).scale(3).next_to(hero, DOWN)
-        subhero = Text("Layered Data", **matrix_style.SUBHERO_STYLE).next_to(underline, DOWN)
-        self.play(Write(hero), Create(underline), Write(subhero))
-        self.wait(1.5)
-        self.play(FadeOut(underline), FadeOut(subhero), hero.animate.to_edge(UP).scale(0.7))
+        self.setup_scene() 
+        self.intro_animation("Networking Devices", "Controlling the Flow of Data")
 
         osi_layers = [
             "7. Application",

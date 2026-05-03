@@ -4,7 +4,7 @@ from manim import *
 from config import *
 from common import CommonUtils
 
-class NetworkingDevices(Scene, CommonUtils):
+class NetworkDevices(Scene, CommonUtils):
 
     matrix_style = MatrixStyle()
     red_style = RedStyle()
@@ -174,7 +174,7 @@ class NetworkingDevices(Scene, CommonUtils):
             1: self.blue_style,
             2: self.yellow_style
         }
-        for _ in range(10):
+        for _ in range(1):
             in_idx, out_idx, out_idz = random.sample(range(num_conns), 3)
             row_idx, row_color = row_config[out_idx]
             in_conn = connections.submobjects[in_idx]
@@ -206,7 +206,7 @@ class NetworkingDevices(Scene, CommonUtils):
             3: self.white_style
         }
 
-        for _ in range(10):
+        for _ in range(1):
             in_idx, out_idx = random.sample(range(4), 2)
             in_conn = extra_connections.submobjects[in_idx]
             out_conn = extra_connections.submobjects[out_idx]
@@ -303,7 +303,13 @@ class NetworkingDevices(Scene, CommonUtils):
             2: self.yellow_style
         }
 
-        for _ in range(10):
+        label0 = Text("fa0/23", **self.white_style.LABEL_STYLE).next_to(self.pcs[0], DOWN, buff=0.4)
+        label1 = Text("fa0/24", **self.white_style.LABEL_STYLE).next_to(self.pcs[1], RIGHT + UP, buff=0.2)
+        label2 = Text("fa0/25", **self.white_style.LABEL_STYLE).next_to(self.pcs[2], LEFT + UP, buff=0.2)
+        labels = VGroup(label0, label1, label2)
+        self.play(FadeIn(labels))
+
+        for _ in range(1):
             in_idx, out_idx = random.sample(range(num_conns), 2)
             in_rule, in_color = traffic_rules["IN_PORT"][in_idx]
             out_rule, out_color = traffic_rules["OUT_PORT"][out_idx]

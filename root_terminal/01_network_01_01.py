@@ -1,29 +1,24 @@
+import random
+from pathlib import Path
 from manim import *
 from config import *
-from pathlib import Path
-import random
+from common import CommonUtils
 
-class Network(Scene):
+class NetworkIntro(Scene, CommonUtils):
+
+    matrix_style = MatrixStyle()
+    red_style = RedStyle()
+    yellow_style = YellowStyle()
+    blue_style = BlueStyle()
+    purple_style = PurpleStyle()
+    pink_style = PinkStyle()
+    white_style = WhiteStyle()
+    amber_style = AmberStyle()
+
     def construct(self):
 
-        matrix_style = MatrixStyle()
-        red_style = RedStyle()
-        yellow_style = YellowStyle()
-        blue_style = BlueStyle()
-        purple_style = PurpleStyle()
-        pink_style = PinkStyle()
-        white_style = WhiteStyle()
-        amber_style = AmberStyle()
-
-        self.camera.background_color = VOID_BLACK
-        current_dir = Path(__file__).parent
-
-        hero = Text("What is a Network?", **matrix_style.HERO_STYLE)
-        underline = Line(LEFT, RIGHT).scale(3).next_to(hero, DOWN)
-        subhero = Text("(Computer Networks)", **matrix_style.SUBHERO_STYLE).next_to(underline, DOWN)
-        self.play(Write(hero), Create(underline), Write(subhero))
-        self.wait(1.5)
-        self.play(FadeOut(underline), FadeOut(subhero), hero.animate.to_edge(UP).scale(0.7))
+        self.setup_scene()
+        self.intro_animation("WHAT IS A NETWORK ?","THE BASICS")
 
         # Define Nodes
         hub = 0
@@ -78,9 +73,5 @@ class Network(Scene):
             for _ in range(120)
         ]
 
-        self.play(
-            AnimationGroup(*flashes, lag_ratio=0.5),
-            run_time=60
-        )
-
+        self.play(AnimationGroup(*flashes, lag_ratio=0.5), run_time=60)
         self.wait(10)

@@ -10,21 +10,21 @@ GHOST_WHITE = "#F8F8FF"
 VAPOR_PINK = "#FF00FF"
 ALERT_AMBER = "#FF8C00"
 
+CLI_FONT = "Hack"
+
 def apply_icon_style(svg_obj,color):
-    svg_obj.set_width(0.8)
     svg_obj.set_color(GHOST_WHITE)
     svg_obj.set_fill(color, opacity=0.3)
     svg_obj.set_stroke(width=1)
     return svg_obj
 
 class BaseStyle:
-    COLOR = GHOST_WHITE  # Default fallback
-    FONT = "Hack"
+    COLOR = GHOST_WHITE
 
     @property
     def HERO_STYLE(self):
         return {
-            "font": self.FONT,
+            "font": CLI_FONT,
             "font_size": 40,
             "color": self.COLOR,
             "fill_opacity": 1,
@@ -34,7 +34,7 @@ class BaseStyle:
     @property
     def SUBHERO_STYLE(self):
         return {
-            "font": self.FONT,
+            "font": CLI_FONT,
             "font_size": 30,
             "color": self.COLOR,
             "weight": BOLD,
@@ -43,7 +43,7 @@ class BaseStyle:
     @property
     def TITLE_STYLE(self):
         return {
-            "font": self.FONT,
+            "font": CLI_FONT,
             "font_size": 24,
             "color": self.COLOR,
             "weight": BOLD,
@@ -52,7 +52,7 @@ class BaseStyle:
     @property
     def SUBTITLE_STYLE(self):
         return {
-            "font": self.FONT,
+            "font": CLI_FONT,
             "font_size": 18,
             "color": self.COLOR,
             "weight": BOLD,
@@ -61,7 +61,7 @@ class BaseStyle:
     @property
     def LABEL_STYLE(self):
         return {
-            "font": self.FONT,
+            "font": CLI_FONT,
             "font_size": 12,
             "color": self.COLOR,
             "weight": BOLD,
@@ -72,7 +72,6 @@ class BaseStyle:
         return {
             "stroke_color": self.COLOR,
             "stroke_width": 1,
-            "buff": 0,
             "stroke_opacity":0.3,
         }
 
