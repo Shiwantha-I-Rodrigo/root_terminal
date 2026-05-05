@@ -20,12 +20,20 @@ class NetworkDesign(Scene, CommonUtils):
         self.setup_scene()
         section_01 = self.stylize("NETWORK DESIGN/DEVICES").scale(0.7).to_edge(UL, buff=0.5)
         self.play(FadeIn(section_01))
+        # self.add_flicker(section_01)
+
+        # background effects
+        # back_grid = self.get_hacker_grid()
+        # self.add(back_grid)
+        # self.add_matrix_animation(back_grid)
 
         # legend
         legend = self.set_legend()
         pointer = Triangle(color=MATRIX_GREEN).scale(0.1).rotate(-90 * DEGREES)
         pointer.next_to(legend[0], LEFT, buff=0.2)
         self.play(FadeIn(legend, pointer))
+        # self.add_flicker(legend)
+        # self.add_flicker(pointer)
 
         # hub
         hub = self.get_hub_switch("hub")
@@ -127,7 +135,7 @@ class NetworkDesign(Scene, CommonUtils):
             FadeIn(ap["labels"]),
             run_time=2
         )
-        self.animate_ap(ap, 5)
+        self.animate_ap(ap, 1)
         self.play(FadeOut(ap["all"]))
 
 
@@ -212,7 +220,7 @@ class NetworkDesign(Scene, CommonUtils):
             nodes.add(node)
             connections.add(line)
         subnet_area_1 = RoundedRectangle(corner_radius=0.1, color=MATRIX_GREEN, fill_opacity=0.05).surround(VGroup(nodes[0],nodes[1]), stretch=True, buff=1)
-        label_1 = Text("Subnet A (192.168.1.10/24)", **self.matrix_style.LABEL_STYLE).next_to(subnet_area_1, UP)
+        label_1 = Text("Subnet A (192.168.1.10/24)", **self.matrix_style.LABEL_STYLE).next_to(subnet_area_1, LEFT)
         subnet_area_2 = RoundedRectangle(corner_radius=0.1, color=SHOCK_PURPLE, fill_opacity=0.05).surround(VGroup(nodes[2]), stretch=True, buff=1)
         label_2 = Text("Subnet B (192.168.1.20/24)", **self.purple_style.LABEL_STYLE).next_to(subnet_area_2, LEFT)
         return {"center": center, "nodes": nodes, "connections": connections, "subnet": VGroup(subnet_area_1, label_1,subnet_area_2, label_2), "all": VGroup(center, nodes, connections, subnet_area_1, label_1,subnet_area_2, label_2)}

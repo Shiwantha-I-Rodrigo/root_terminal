@@ -18,6 +18,9 @@ class CommonUtils:
         self.camera.background_color = VOID_BLACK
         self.assets_path = Path(__file__).parent / "assets"
     
+    def add_flicker(self,mobject):
+        mobject.add_updater(lambda m, dt: m.set_opacity(random.uniform(0.7, 1.0)))
+    
     def stylize(self, title):
         title = "❯ " + title
         chars_list = []
@@ -139,3 +142,58 @@ class CommonUtils:
                 self.play(MoveAlongPath(packet, connections[in_idx]), run_time=0.5, rate_func=lambda t: 1 - t)
                 self.play(MoveAlongPath(packet, connections[out_idx]), run_time=0.5, rate_func=linear)
                 self.remove(packet)
+
+    def add_matrix_animation(self, mobject, interval=0.1, color_a=MATRIX_GREEN):
+        mobject.internal_timer = 0
+        CLI_FONT = "Noto Sans Mono CJK JP" 
+        KATAKANA = "アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン"
+        CHARS = KATAKANA + "0123456789"
+
+        def matrix_updater(mob, dt):
+            mob.internal_timer += dt
+            if mob.internal_timer >= interval:
+                mob.internal_timer = 0
+                x = random.uniform(-7, 7)
+                y = random.uniform(-4, 4)
+                
+                # 1. Assign a unique speed for this specific character
+                # Values between 0.5 (slow/far) and 3.0 (fast/near) work well
+                char_speed = random.uniform(0.5, 3.0)
+                
+                char = Text(random.choice(CHARS), font=CLI_FONT, font_size=14)
+                char.current_alpha = 0.2
+                char.set_color(color_a)
+                char.set_z_index(-3)
+                char.move_to([x, y, 0])
+                
+                
+                # 2. Pass that speed into the closure
+                def char_updater(c, dt, speed=char_speed):
+                    # Move based on its own specific speed
+                    c.shift(DOWN * speed * dt)
+                    
+                    c.current_alpha -= dt * 0.05
+                    if c.current_alpha <= 0:
+                        self.remove(c)
+                        c.remove_updater(char_updater)
+                    else:
+                        c.set_fill(opacity=c.current_alpha)
+                        c.set_stroke(opacity=c.current_alpha)
+                
+                char.add_updater(char_updater)
+                self.add(char)
+                
+        mobject.add_updater(matrix_updater)
+    
+    def get_hacker_grid(self, color=MATRIX_GREEN, stroke_width=0.2, faint_opacity=0.2, grid_spacing=0.2):
+        grid = NumberPlane(
+            x_range=[-10, 10, grid_spacing],
+            y_range=[-6, 6, grid_spacing],
+            background_line_style={
+                "stroke_color": color,
+                "stroke_width": stroke_width,
+                "stroke_opacity": faint_opacity,
+            },
+            axis_config={"stroke_opacity": 0}
+        )
+        return grid
