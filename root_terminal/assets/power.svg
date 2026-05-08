@@ -1,0 +1,25 @@
+<svg width="800px" height="800px" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <!-- Bottom Left Side (Darker Charcoal) -->
+  <path d="M537 820.3l-470-230v-222l470 212z" fill="#3ED6FF" />
+  
+  <!-- Bottom Right Side (Deep Charcoal) -->
+  <path d="M537 820.3l420-230v-220l-420 210z" fill="#2481BA" />
+  
+  <!-- Top Surface (Electric Yellow) -->
+  <path d="M67 368.3l470 212 420-210-494.4-166.6z" fill="#37BBEF" />
+
+  <!-- Giant Overflowing Electricity Sign -->
+  <g transform="translate(512, 380)">
+    <!-- Shadow/Glow for the Bolt (Optional, provides depth) -->
+    <path d="M-60 -320 L100 -320 L-20 -40 L140 -40 L-120 340 L20 60 L-100 60 Z" 
+          fill="rgba(0,0,0,0.2)" 
+          transform="translate(10, 10)" />
+    
+    <!-- Main Bolt -->
+    <path d="M-60 -320 L100 -320 L-20 -40 L140 -40 L-120 340 L20 60 L-100 60 Z" 
+          fill="#ece7b2" 
+          stroke="#0e0087" 
+          stroke-width="8" 
+          stroke-linejoin="round" />
+  </g>
+</svg>

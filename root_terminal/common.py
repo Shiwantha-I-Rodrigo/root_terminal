@@ -36,6 +36,12 @@ class CommonUtils:
         text_chars.arrange(RIGHT, buff=0.12, aligned_edge=DOWN)
         self.add(text_chars)
         return text_chars
+    
+    def set_legend(self, labels):
+        legend_items = VGroup(*[Text(label, **self.matrix_style.LABEL_STYLE) for label in labels])
+        legend_items.arrange(DOWN, aligned_edge=LEFT, buff=0.4)
+        legend_items.to_edge(LEFT, buff=1)
+        return legend_items
 
     def intro_animation(self, title, subtitle_text):
         title = "❯ " + title

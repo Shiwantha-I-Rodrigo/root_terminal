@@ -28,7 +28,7 @@ class NetworkDesign(Scene, CommonUtils):
         # self.add_matrix_animation(back_grid)
 
         # legend
-        legend = self.set_legend()
+        legend = self.set_legend([ "I. Hub", "II. Switch", "III. L3 Switch", "IV. Router", "V. Firewall", "VI. IDS", "VII. IPS", "VIII. Access Point"])
         pointer = Triangle(color=MATRIX_GREEN).scale(0.1).rotate(-90 * DEGREES)
         pointer.next_to(legend[0], LEFT, buff=0.2)
         self.play(FadeIn(legend, pointer))
@@ -138,13 +138,6 @@ class NetworkDesign(Scene, CommonUtils):
         self.animate_ap(ap, 1)
         self.play(FadeOut(ap["all"]))
 
-
-    def set_legend(self):
-        labels = [ "I. Hub", "II. Switch", "III. L3 Switch", "IV. Router", "V. Firewall", "VI. IDS", "VII. IPS", "VIII. Access Point"]
-        legend_items = VGroup(*[Text(label, **self.matrix_style.LABEL_STYLE) for label in labels])
-        legend_items.arrange(DOWN, aligned_edge=LEFT, buff=0.4)
-        legend_items.to_edge(LEFT, buff=1)
-        return legend_items
 
     def get_hub_switch(self, device_type):
         center = self.create_node(device_type).shift(RIGHT * 2)

@@ -1,0 +1,8 @@
+<svg width="800px" height="800px" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <!-- Bottom Left Side -->
+  <path d="M537 820.3l-470-230v-222l470 212z" fill="#37BBEF" />
+  <!-- Bottom Right Side -->
+  <path d="M537 820.3l420-230v-220l-420 210z" fill="#2481BA" />
+  <!-- Top Surface -->
+  <path d="M67 368.3l470 212 420-210-494.4-166.6z" fill="#3ED6FF" />
+</svg>
