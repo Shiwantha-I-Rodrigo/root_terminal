@@ -18,7 +18,7 @@ class NetworkDesign(Scene, CommonUtils):
 
     def construct(self):
         self.setup_scene()
-        section_01 = self.stylize("NETWORK DESIGN/WIRELESS & POE").scale(0.7).to_edge(UL, buff=0.5)
+        section_01 = self.stylize("NETWORK DESIGN/WLC MODELS & PoE STANDARDS").scale(0.7).to_edge(UL, buff=0.5)
         self.play(FadeIn(section_01))
         # self.add_flicker(section_01)
 
@@ -28,7 +28,7 @@ class NetworkDesign(Scene, CommonUtils):
         # self.add_matrix_animation(back_grid)
 
         # legend
-        legend = self.set_legend([ "I. Wireless LAN Controllers", "II. Management Platforms", "III. Power over Ethernet"])
+        legend = self.set_legend([ "I. Wireless LAN Controllers", "II. Power over Ethernet"])
         pointer = Triangle(color=MATRIX_GREEN).scale(0.1).rotate(-90 * DEGREES)
         pointer.next_to(legend[0], LEFT, buff=0.2)
         self.play(FadeIn(legend, pointer))
@@ -39,32 +39,16 @@ class NetworkDesign(Scene, CommonUtils):
         wlc = self.get_wlc()
         self.play(pointer.animate.next_to(legend[0], LEFT, buff=0.2))
         self.play(Create(wlc["all"]), run_time=2)
-        self.animate_wlc(wlc, 2)
+        self.animate_wlc(wlc, 10)
         self.play(FadeOut(wlc["all"]))
+        self.play(FadeOut(wlc["label2"]))
 
-        # # dna
-        # dna = self.get_dna("dna")
-        # self.play(pointer.animate.next_to(legend[0], LEFT, buff=0.2))
-        # self.play(
-        #     Create(dna["center"]),
-        #     Create(dna["connections"]),
-        #     FadeIn(dna["nodes"]),
-        #     run_time=2
-        # )
-        # self.animate_dna(dna, 1)
-        # self.play(FadeOut(dna["all"]))
-
-        # # poe
-        # poe = self.get_poe("poe")
-        # self.play(pointer.animate.next_to(legend[0], LEFT, buff=0.2))
-        # self.play(
-        #     Create(poe["center"]),
-        #     Create(poe["connections"]),
-        #     FadeIn(poe["nodes"]),
-        #     run_time=2
-        # )
-        # self.animate_poe(poe, 1)
-        # self.play(FadeOut(poe["all"]))
+        # poe
+        poe = self.get_poe()
+        self.play(pointer.animate.next_to(legend[1], LEFT, buff=0.2))
+        self.play(Create(poe["all"]),run_time=2)
+        self.animate_poe(poe, 10)
+        self.play(FadeOut(poe["all"]))
 
 
     def get_wlc(self):
@@ -153,7 +137,7 @@ class NetworkDesign(Scene, CommonUtils):
         self.play(*[p.animate.move_to(switch) for p in config_packets], run_time=0.8)
         self.play(*[MoveAlongPath(p, ap.uplink) for p, ap in zip(config_packets, aps)], run_time=0.8)
         self.play(FadeOut(config_packets), Indicate(wlc["aps"], color=ELECTRIC_RED))
-        for _ in range(loops):
+        for _ in range(5):
             animate_packet_flow(*random.sample(clients, 2), use_wlc=False)
         target_ap = aps[0]
         req_packet = Dot(color=ELECTRIC_RED).set_z_index(3).move_to(target_ap)
@@ -168,3 +152,99 @@ class NetworkDesign(Scene, CommonUtils):
         self.play(Indicate(target_ap, color=ELECTRIC_RED), FadeOut(req_packet))
         for _ in range(loops):
             animate_packet_flow(*random.sample(clients, 2), use_wlc=False)
+    
+    def get_poe(self):
+        pd_group = VGroup()
+        connections = VGroup()
+        pse_switch = self.create_node("switch").move_to(UP * 0.5 + RIGHT * 1.5)
+        pse_label = Text("PSE (Switch)", **self.matrix_style.LABEL_STYLE).next_to(pse_switch, UP)
+        pd_types = ["camera", "phone", "access", "device"]
+        pd_labels = ["IP Camera", "VoIP Phone", "AP", "IoT Sensor"]
+        for i, (icon_name, label_text) in enumerate(zip(pd_types, pd_labels)):
+            angle = PI + (i * PI / 3)
+            pos = pse_switch.get_center() + np.array([np.cos(angle) * 2.5, np.sin(angle) * 2.5, 0])
+            pd = self.create_node(icon_name).move_to(pos)
+            pd = apply_icon_style(pd, MATRIX_GREEN if i == 1 else GHOST_WHITE)
+            pd.uplink = self.connect(pse_switch, pd)
+            pd.label = Text(label_text, **self.matrix_style.LABEL_STYLE).next_to(pd, DOWN * 0.5)
+            pd_group.add(pd)
+            connections.add(pd.uplink)
+        return {
+            "pse": pse_switch,
+            "pse_label": pse_label,
+            "pds": pd_group,
+            "connections": connections,
+            "all": VGroup(pse_switch, pse_label, pd_group, connections)
+        }
+    
+    def animate_poe(self, poe, loops):
+        pse = poe["pse"]
+        pds = poe["pds"].submobjects
+        
+        poe_pds = [pd for i, pd in enumerate(pds) if i in [0, 2, 3]]
+        non_poe_pds = [pd for i, pd in enumerate(pds) if i == 1]
+        
+        # Detection (All devices)
+        detection_text = Text("DETECTING DEVICES (LOW VOLTAGE PULSE)", **self.purple_style.LABEL_STYLE).next_to(pse, UP, buff=1)
+        self.play(Write(detection_text))
+        detection_pulses = VGroup(*[Dot(**self.purple_style.DOT_STYLE).move_to(pse) for _ in pds])
+        self.play(
+            *[MoveAlongPath(p, pd.uplink, rate_func=there_and_back) for p, pd in zip(detection_pulses, pds)],
+            *[Indicate(pd, color=SHOCK_PURPLE) for pd in pds],
+            run_time=2)
+        self.play(FadeOut(detection_pulses), FadeOut(detection_text))
+
+        # Negotiation
+        negotiation_text = Text("NEGOTIATING POWER (POE DEVICES FOUND)", **self.yellow_style.LABEL_STYLE).next_to(pse, UP, buff=1)
+        self.play(Write(negotiation_text))
+        negotiation_pulses = VGroup(*[Dot(**self.yellow_style.DOT_STYLE).move_to(pse) for _ in poe_pds])
+        non_poe_conns = VGroup(*[pd.uplink for pd in non_poe_pds])
+        poe_conns = VGroup(*[pd.uplink for pd in poe_pds])
+        self.play(poe_conns.animate.set_color(NEON_YELLOW).set_stroke(width=3), run_time=1)
+        self.play(
+            *[MoveAlongPath(p, pd.uplink, rate_func=there_and_back) for p, pd in zip(negotiation_pulses, poe_pds)],
+            *[Indicate(pd, color=NEON_YELLOW) for pd in poe_pds],
+            non_poe_conns.animate.set_stroke(opacity=0.2),
+            run_time=2
+        )
+        poe_label_1 = Text("12W", **self.white_style.LABEL_STYLE).next_to(pds[0], UP, buff=0.2)
+        poe_label_2 = Text("22W", **self.white_style.LABEL_STYLE).next_to(pds[2], DOWN, buff=0.2)
+        poe_label_3 = Text("60W", **self.white_style.LABEL_STYLE).next_to(pds[3], UP, buff=0.2)
+        self.play(FadeIn(poe_label_1, poe_label_2, poe_label_3))
+        self.play(FadeOut(negotiation_pulses), FadeOut(negotiation_text))
+        
+        # Energize
+        self.play(poe_conns.animate.set_color(ALERT_AMBER).set_stroke(width=5), run_time=1)
+        self.play(FadeOut(negotiation_pulses), FadeOut(negotiation_text))
+        power_text = Text("FULL POWER DELIVERED", **self.amber_style.LABEL_STYLE).next_to(pse, UP, buff=1)
+        self.play(Write(power_text))
+        power_pulses = VGroup(*[Dot(**self.amber_style.DOT_STYLE).move_to(pse) for _ in poe_pds])
+        self.play(
+            *[MoveAlongPath(p, pd.uplink, rate_func=there_and_back) for p, pd in zip(power_pulses, poe_pds)],
+            *[Indicate(pd, color=ALERT_AMBER) for pd in poe_pds],
+            run_time=2
+        )
+        self.play(*[pd.animate.set_color(MATRIX_GREEN) for pd in pds], run_time=1)
+        self.play(FadeOut(power_pulses), FadeOut(power_text))
+        
+        # Data
+        for _ in range(loops):
+            data_dots = VGroup(*[Dot(**self.matrix_style.DOT_STYLE).move_to(pd) for pd in pds])
+            self.play(
+                *[MoveAlongPath(d, pd.uplink, rate_func=lambda t: 1-t) for d, pd in zip(data_dots, pds)],
+                run_time=2,
+                rate_func=linear
+            )
+            self.play(FadeOut(data_dots))
+
+        # Table
+        standards_table = Table(
+            [["802.3af", "PoE", "15.4W"],
+             ["802.3at", "PoE+", "30W"],
+             ["802.3bt", "UPoE+", "60-90W"]],
+            col_labels=[Text("Standard"), Text("Type"), Text("Max Power")],
+            include_outer_lines=True
+        ).scale(0.3).to_corner(DL, buff=1)
+        self.play(Create(standards_table))
+
+        self.wait(2)
